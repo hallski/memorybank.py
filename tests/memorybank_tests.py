@@ -1,11 +1,7 @@
 from nose.tools import *
-import memorybank
+from memorybank.memory import Memory
 
-def setup():
-    print('SETUP!')
 
-def teardown():
-    print('TEARDOWN!')
-
-def test_basic():
-    print('I RAN!')
+def test_memory():
+    memory = Memory('A memory')
+    assert_equal(memory.do_something(), 1)

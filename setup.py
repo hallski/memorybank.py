@@ -10,7 +10,10 @@ config = {
     'download_url': 'http://hallski.org',
     'author_email': 'hallski@hallski.org',
     'version': '0.1',
-    'install_requires': ['nose'],
+    'install_requires': [
+        'nose',
+        'urwid'
+    ],
     'packages': ['memorybank'],
     'scripts': [],
     'name': 'MemoryBank'
