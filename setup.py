@@ -16,7 +16,12 @@ config = {
     ],
     'packages': ['memorybank'],
     'scripts': [],
-    'name': 'MemoryBank'
+    'name': 'MemoryBank',
+    'entry_points': {
+        'console_scripts': [
+            'mb = memorybank.__main__:main'
+        ]
+    }
 }
 
 setup(**config)

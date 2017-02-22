@@ -1,6 +1,0 @@
-#!/usr/bin/env python3
-
-from memorybank.memory import Memory
-
-memory = Memory('A memory')
-print('Started memory bank with memory %s' % memory.title)
