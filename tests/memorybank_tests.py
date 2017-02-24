@@ -1,5 +1,5 @@
 from nose.tools import *
-from memorybank.memory import Memory
+from memorybank.core.memory import Memory
 
 
 def test_memory():
