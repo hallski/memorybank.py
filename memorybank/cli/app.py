@@ -28,21 +28,38 @@ def wrap_button(string):
     return button
 
 
-def wrap_item_list(item_list, wrap_function):
+def wrap_list_items(item_list, wrap_function):
     return [wrap_function(item) for item in item_list]
 
 
-def exit_on_q(key):
-    if key.lower() in ('q'):
+def exit_on_q(event):
+    if event in ('q', 'Q'):
         raise urwid.ExitMainLoop()
+
+
+def get_parents_widget():
+    parents_widget = urwid.Text('Parents goes here', align='center')
+    return urwid.Filler(parents_widget)
+
+
+def get_chilren_widget():
+    children_widget = urwid.Text('Children goes here', align='center')
+    return urwid.Filler(children_widget, 'middle')
+
+
+def get_related_widget():
+    related_walker = urwid.SimpleFocusListWalker(wrap_list_items(related, wrap_button))
+    rel_list = urwid.ListBox(related_walker)
+    return rel_list
 
 
 def main():
     fill = urwid.Filler(active_memory, 'middle')
-    walker = urwid.SimpleFocusListWalker(wrap_item_list(related, wrap_button))
-    rel_list = urwid.ListBox(walker)
-    pile = urwid.Pile([rel_list, fill])
-    background = urwid.AttrMap(pile, 'background')
+    related_list = urwid.Filler(get_related_widget(), 'middle')
+    col = urwid.Columns([get_related_widget(), fill])
+
+    main_pile = urwid.Pile([get_parents_widget(), col, get_chilren_widget()])
+    background = urwid.AttrMap(main_pile, 'background')
     loop = urwid.MainLoop(background, palette, unhandled_input=exit_on_q)
     loop.run()
 
