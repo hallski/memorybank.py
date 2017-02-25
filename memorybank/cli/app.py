@@ -8,7 +8,12 @@ siblings = ['Sibling 1', 'Sibling 2', 'Sibling 3', 'Sibling 4', 'Sibling 5']
 related = ['Related 1', 'Related 2', 'Related 3']
 
 palette = [
-    ('background', 'light green', 'black')]
+    ('debug1', 'yellow', 'dark red'),
+    ('debug2', 'yellow', 'dark magenta'),
+    ('debug3', 'yellow', 'dark green'),
+    ('debug4', 'dark gray', 'yellow'),
+    ('debug5', 'white', 'dark cyan'),
+    ('Background', 'light green', 'black')]
 
 
 active_memory = urwid.Text('Focused memory', align='center')
@@ -37,26 +42,53 @@ def exit_on_q(event):
         raise urwid.ExitMainLoop()
 
 
+def wrap_with_palette(palette_name):
+    def curried_decorator(func):
+        def wrapper(*args, **kwargs):
+            widget = func(*args, **kwargs)
+            print('pn:', widget)
+            mapped = urwid.AttrMap(widget, palette_name)
+            print('pp:', mapped)
+            return mapped
+        return wrapper
+    return curried_decorator
+
+@wrap_with_palette('debug1')
+def get_active_memory():
+    return urwid.Filler(active_memory, 'middle')
+
+
+@wrap_with_palette('debug4')
 def get_parents_widget():
     parents_widget = urwid.Text('Parents goes here', align='center')
     return urwid.Filler(parents_widget)
 
 
+@wrap_with_palette('debug2')
 def get_chilren_widget():
     children_widget = urwid.Text('Children goes here', align='center')
     return urwid.Filler(children_widget, 'middle')
 
 
+@wrap_with_palette('debug3')
 def get_related_widget():
     related_walker = urwid.SimpleFocusListWalker(wrap_list_items(related, wrap_button))
     rel_list = urwid.ListBox(related_walker)
+#    return urwid.AttrMap(rel_list, 'debug1')
     return rel_list
 
 
+@wrap_with_palette('debug5')
+def get_siblings_widget():
+    walker = urwid.SimpleFocusListWalker(wrap_list_items(siblings, wrap_button))
+    widget = urwid.ListBox(walker)
+    return widget
+
+
 def main():
-    fill = urwid.Filler(active_memory, 'middle')
-    related_list = urwid.Filler(get_related_widget(), 'middle')
-    col = urwid.Columns([get_related_widget(), fill])
+    col = urwid.Columns([get_related_widget(),
+                         get_active_memory(),
+                         get_siblings_widget()])
 
     main_pile = urwid.Pile([get_parents_widget(), col, get_chilren_widget()])
     background = urwid.AttrMap(main_pile, 'background')
