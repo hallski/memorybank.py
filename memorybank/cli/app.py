@@ -13,10 +13,17 @@ palette = [
     ('debug3', 'yellow', 'dark green'),
     ('debug4', 'dark gray', 'yellow'),
     ('debug5', 'white', 'dark cyan'),
-    ('Background', 'light green', 'black')]
+    ('background', 'light green', 'black')]
 
 
 active_memory = urwid.Text('Focused memory', align='center')
+
+class MBButton(urwid.Button):
+    def __init__(self, caption, callback):
+        super(MBButton, self).__init__("")
+        urwid.connect_signal(self, 'click', callback, caption)
+        self._w = urwid.AttrMap(urwid.SelectableIcon('> %s' % caption, 4),
+                                None, focus_map='debug1')
 
 
 def wrap_text(string):
@@ -28,9 +35,7 @@ def clicked(button, string):
 
 
 def wrap_button(string):
-    button = urwid.Button(string)
-    urwid.connect_signal(button, 'click', clicked, string)
-    return button
+    return MBButton(string, clicked)
 
 
 def wrap_list_items(item_list, wrap_function):
@@ -53,42 +58,40 @@ def wrap_with_palette(palette_name):
         return wrapper
     return curried_decorator
 
-@wrap_with_palette('debug1')
+@wrap_with_palette('background')
 def get_active_memory():
     return urwid.Filler(active_memory, 'middle')
 
 
 @wrap_with_palette('debug4')
 def get_parents_widget():
-    parents_widget = urwid.Text('Parents goes here', align='center')
-    return urwid.Filler(parents_widget)
+    return get_list_widget(parents)
 
 
 @wrap_with_palette('debug2')
 def get_chilren_widget():
-    children_widget = urwid.Text('Children goes here', align='center')
-    return urwid.Filler(children_widget, 'middle')
+    return get_list_widget(children)
 
+
+def get_list_widget(items):
+    walker = urwid.SimpleFocusListWalker(wrap_list_items(items, wrap_button))
+    widget = urwid.ListBox(walker)
+    return widget
 
 @wrap_with_palette('debug3')
 def get_related_widget():
-    related_walker = urwid.SimpleFocusListWalker(wrap_list_items(related, wrap_button))
-    rel_list = urwid.ListBox(related_walker)
-#    return urwid.AttrMap(rel_list, 'debug1')
-    return rel_list
+    return get_list_widget(related)
 
 
 @wrap_with_palette('debug5')
 def get_siblings_widget():
-    walker = urwid.SimpleFocusListWalker(wrap_list_items(siblings, wrap_button))
-    widget = urwid.ListBox(walker)
-    return widget
+    return get_list_widget(siblings)
 
 
 def main():
-    col = urwid.Columns([get_related_widget(),
-                         get_active_memory(),
-                         get_siblings_widget()])
+    col = urwid.Columns([('weight', 1, get_related_widget()),
+                         ('weight', 2, get_active_memory()),
+                         ('weight', 1, get_siblings_widget())])
 
     main_pile = urwid.Pile([get_parents_widget(), col, get_chilren_widget()])
     background = urwid.AttrMap(main_pile, 'background')
