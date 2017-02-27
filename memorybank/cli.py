@@ -18,6 +18,7 @@ palette = [
 
 active_memory = urwid.Text('World of Warcraft', align='center')
 
+
 class MBButton(urwid.Button):
     def __init__(self, caption, callback):
         super(MBButton, self).__init__("")
@@ -56,17 +57,18 @@ def wrap_with_palette(palette_name):
         return wrapper
     return curried_decorator
 
+
 @wrap_with_palette('debug4')
 def get_active_memory():
     return urwid.Filler(active_memory, 'top')
 
 
-#@wrap_with_palette('debug4')
+# @wrap_with_palette('debug4')
 def get_parents_widget():
     return get_list_widget(parents)
 
 
-#@wrap_with_palette('debug2')
+# @wrap_with_palette('debug2')
 def get_chilren_widget():
     return get_list_widget(children)
 
@@ -76,12 +78,13 @@ def get_list_widget(items):
     widget = urwid.ListBox(walker)
     return widget
 
-#@wrap_with_palette('debug3')
+
+# @wrap_with_palette('debug3')
 def get_related_widget():
     return get_list_widget(related)
 
 
-#@wrap_with_palette('debug5')
+# @wrap_with_palette('debug5')
 def get_siblings_widget():
     return get_list_widget(siblings)
 
@@ -95,9 +98,6 @@ def main():
                             urwid.LineBox(get_active_memory()),
                             urwid.Padding(under_cols,
                                           left=2, right=2)])
-#    col = urwid.Columns([('weight', 1, get_related_widget()),
-#                         ('weight', 2, main_pile),
-#                         ('weight', 1, get_siblings_widget())])
 
     background = urwid.AttrMap(main_pile, 'background')
     loop = urwid.MainLoop(background, palette, unhandled_input=exit_on_q)
