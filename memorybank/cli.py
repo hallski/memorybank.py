@@ -11,15 +11,26 @@ palette = [
     ('title', 'light blue', 'black'),
     ('header', 'white', 'dark blue'),
     ('active_memory', 'yellow', 'black'),
+    ('active_note', 'white', 'black'),
     ('debug1', 'yellow', 'dark red'),
     ('debug2', 'yellow', 'dark magenta'),
     ('debug3', 'yellow', 'dark green'),
     ('debug4', 'dark gray', 'yellow'),
     ('debug5', 'white', 'dark cyan'),
-    ('background', 'light green', 'black')]
+    ('background', 'dark cyan', 'black')]
 
 
-active_memory = urwid.Text('World of Warcraft', align='center')
+active_memory = urwid.Text('World of Warcraft', align='left')
+active_note = '''World of Warcraft (WoW) is a massively multiplayer online role-playing game
+(MMORPG) released in 2004 by Blizzard Entertainment. It is the fourth
+released game setin the fantasy Warcraft universe, which was first introduced
+by Warcraft: Orcs & Humans in 1994.[3] World of Warcraft takes place within
+the Warcraft world of Azeroth, approximately four years after the events at
+the conclusion of Blizzard's previous Warcraft release, Warcraft III: The
+Frozen Throne.[4] Blizzard Entertainment announced World of Warcraft on
+September 2, 2001.[5] The game was released on November 23, 2004, on the
+10th anniversary of the Warcraft franchise.
+'''
 
 
 class MBButton(urwid.Button):
@@ -28,10 +39,6 @@ class MBButton(urwid.Button):
         urwid.connect_signal(self, 'click', callback, caption)
         self._w = urwid.AttrMap(urwid.SelectableIcon('> %s' % caption, 4),
                                 None, focus_map='debug1')
-
-
-def wrap_text(string):
-    return urwid.Text(string)
 
 
 def clicked(button, string):
@@ -63,21 +70,20 @@ def wrap_with_palette(palette_name):
 
 @wrap_with_palette('active_memory')
 def get_active_memory():
-    filler = urwid.Filler(active_memory, 'top')
-    return urwid.LineBox(filler, title='Active Memory')
+    note = urwid.Text(('active_note', active_note))
+    pile = urwid.Pile([('pack', active_memory),
+                       ('pack', urwid.Divider()),
+                       ('pack', note)])
+    pile = urwid.Padding(pile, left=1, right=1)
+    return pile
 
 
-# @wrap_with_palette('debug4')
 def get_parents_widget():
-    return create_relation_frame('Parents', parents + extra_values)
+    return create_relation_frame('Parent Memories', parents)
 
 
-# @wrap_with_palette('debug2')
 def get_children_widget():
-    return create_relation_frame('Children', children + extra_values)
-
-
-extra_values = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
+    return create_relation_frame('Child Memories', children)
 
 
 def get_list_widget(items):
@@ -86,10 +92,8 @@ def get_list_widget(items):
     return widget
 
 
-# @wrap_with_palette('debug3')
 def get_related_widget():
-    global extra_values
-    return create_relation_frame('Related', related + extra_values)
+    return create_relation_frame('Related Memories', related)
 
 
 def create_relation_frame(title, items):
@@ -98,9 +102,8 @@ def create_relation_frame(title, items):
     return urwid.Frame(pile, header=title)
 
 
-# @wrap_with_palette('debug5')
 def get_siblings_widget():
-    return create_relation_frame('Siblings', items=siblings + extra_values)
+    return create_relation_frame('Sibling Memories', items=siblings)
 
 
 def get_header_widget():
@@ -112,9 +115,12 @@ def main():
     pile_left = urwid.Pile([get_parents_widget(),
                             ('pack', urwid.Divider(top=1)),
                             get_siblings_widget()])
+    pile_left = urwid.Padding(pile_left, left=1, right=1)
     pile_right = urwid.Pile([get_children_widget(),
                              ('pack', urwid.Divider(top=1)),
                              get_related_widget()])
+    pile_right = urwid.Padding(pile_right, left=1, right=1)
+
     cols = urwid.Columns([('weight', 1, pile_left),
                           ('weight', 2, get_active_memory()),
                           ('weight', 1, pile_right)],
