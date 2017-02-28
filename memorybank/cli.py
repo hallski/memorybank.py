@@ -12,37 +12,44 @@ palette = [
     ('header', 'white', 'dark blue'),
     ('active_memory', 'yellow', 'black'),
     ('active_note', 'white', 'black'),
-    ('debug1', 'yellow', 'dark red'),
-    ('debug2', 'yellow', 'dark magenta'),
-    ('debug3', 'yellow', 'dark green'),
-    ('debug4', 'dark gray', 'yellow'),
-    ('debug5', 'white', 'dark cyan'),
-    ('background', 'dark cyan', 'black')]
+    ('selected_menu_item', 'white', 'dark green'),
+    ('main_box', 'light blue', 'black'),
+    ('background', 'dark green', 'black')]
 
 
-active_memory = urwid.Text('World of Warcraft', align='left')
-active_note = '''World of Warcraft (WoW) is a massively multiplayer online role-playing game
-(MMORPG) released in 2004 by Blizzard Entertainment. It is the fourth
-released game setin the fantasy Warcraft universe, which was first introduced
-by Warcraft: Orcs & Humans in 1994.[3] World of Warcraft takes place within
-the Warcraft world of Azeroth, approximately four years after the events at
-the conclusion of Blizzard's previous Warcraft release, Warcraft III: The
-Frozen Throne.[4] Blizzard Entertainment announced World of Warcraft on
-September 2, 2001.[5] The game was released on November 23, 2004, on the
-10th anniversary of the Warcraft franchise.
+active_memory = urwid.Text(('active_memory', 'World of Warcraft'),
+                           align='left')
+active_note = '''World of Warcraft (WoW) is a massively multiplayer online  \
+role-playing game (MMORPG) released in 2004 by Blizzard Entertainment. It is \
+the fourth released game setin the fantasy Warcraft universe, which was first \
+introduced by Warcraft: Orcs & Humans in 1994.[3] World of Warcraft takes \
+place within the Warcraft world of Azeroth, approximately four years after \
+the events at the conclusion of Blizzard's previous Warcraft release, \
+Warcraft III: The Frozen Throne.[4] Blizzard Entertainment announced World of \
+Warcraft on September 2, 2001.[5] The game was released on November 23, 2004, \
+on the 10th anniversary of the Warcraft franchise.
 '''
+
+
+# Temporary testing out to see how it looks with a number at the front.
+# The idea is to allow for simply pressing the number and <enter> to
+# select the specific memory
+nr = 0
 
 
 class MBButton(urwid.Button):
     def __init__(self, caption, callback):
+        global nr
+        nr += 1
         super(MBButton, self).__init__("")
         urwid.connect_signal(self, 'click', callback, caption)
-        self._w = urwid.AttrMap(urwid.SelectableIcon('> %s' % caption, 4),
-                                None, focus_map='debug1')
+        s = '{0}. {1}'.format(nr, caption)
+        self._w = urwid.AttrMap(urwid.SelectableIcon(s, 0),
+                                None, focus_map='selected_menu_item')
 
 
 def clicked(button, string):
-    active_memory.set_text(string)
+    active_memory.set_text(('active_memory', string))
 
 
 def wrap_button(string):
@@ -75,7 +82,8 @@ def get_active_memory():
                        ('pack', urwid.Divider()),
                        ('pack', note)])
     pile = urwid.Padding(pile, left=1, right=1)
-    return pile
+    lb = urwid.AttrMap(urwid.LineBox(pile, title='Active Memory'), 'main_box')
+    return lb
 
 
 def get_parents_widget():
