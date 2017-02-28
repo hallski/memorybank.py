@@ -1,6 +1,7 @@
 # Copyright (C) 2017 Mikael Hallendal <hallski@hallski.org>
 
 import urwid
+from core import Memory
 
 parents = ['Blizzard Entertainment', 'Roleplaying Games', 'MMORPG', 'Fantasy']
 children = ['Azeroth', 'Illidan', 'Wrath of the Litch King', 'Draenor']
@@ -19,7 +20,9 @@ palette = [
 
 active_memory = urwid.Text(('active_memory', 'World of Warcraft'),
                            align='left')
-active_note = '''World of Warcraft (WoW) is a massively multiplayer online  \
+
+a_memory = Memory('Word of Warcraft', note='''\
+World of Warcraft (WoW) is a massively multiplayer online  \
 role-playing game (MMORPG) released in 2004 by Blizzard Entertainment. It is \
 the fourth released game setin the fantasy Warcraft universe, which was first \
 introduced by Warcraft: Orcs & Humans in 1994.[3] World of Warcraft takes \
@@ -28,7 +31,7 @@ the events at the conclusion of Blizzard's previous Warcraft release, \
 Warcraft III: The Frozen Throne.[4] Blizzard Entertainment announced World of \
 Warcraft on September 2, 2001.[5] The game was released on November 23, 2004, \
 on the 10th anniversary of the Warcraft franchise.
-'''
+''')
 
 
 # Temporary testing out to see how it looks with a number at the front.
@@ -65,19 +68,8 @@ def exit_on_q(event):
         raise urwid.ExitMainLoop()
 
 
-def wrap_with_palette(palette_name):
-    def curried_decorator(func):
-        def wrapper(*args, **kwargs):
-            widget = func(*args, **kwargs)
-            mapped = urwid.AttrMap(widget, palette_name)
-            return mapped
-        return wrapper
-    return curried_decorator
-
-
-@wrap_with_palette('active_memory')
 def get_active_memory():
-    note = urwid.Text(('active_note', active_note))
+    note = urwid.Text(('active_note', a_memory.note))
     pile = urwid.Pile([('pack', active_memory),
                        ('pack', urwid.Divider()),
                        ('pack', note)])
