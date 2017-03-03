@@ -1,7 +1,8 @@
 # Copyright (C) 2017 Mikael Hallendal <hallski@hallski.org>
 
 import urwid
-from core import Memory
+from memorybank.core import Memory
+import asyncio
 
 parents = ['Blizzard Entertainment', 'Roleplaying Games', 'MMORPG', 'Fantasy']
 children = ['Azeroth', 'Illidan', 'Wrath of the Litch King', 'Draenor']
@@ -132,7 +133,12 @@ def main():
                             ('pack', urwid.Divider(top=2))])
 
     background = urwid.AttrMap(main_pile, 'background')
-    loop = urwid.MainLoop(background, palette, unhandled_input=exit_on_q)
+
+    #    event_loop = asyncio.get_event_loop()
+    event_loop = urwid.AsyncioEventLoop(loop=asyncio.get_event_loop())
+    loop = urwid.MainLoop(background, palette,
+                          event_loop=event_loop,
+                          unhandled_input=exit_on_q)
     loop.run()
 
     print('Bye for now!')
