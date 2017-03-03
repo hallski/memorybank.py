@@ -5,7 +5,8 @@ import unittest
 
 class MemoryBankTest(unittest.TestCase):
     def setUp(self):
-        self.mbank = MemoryBank()
+        self.database = TestDatabase()
+        self.mbank = MemoryBank(self.database)
 
     def test_create_memory(self):
         memory = self.mbank.create_memory('Creating a new memory')
@@ -19,19 +20,38 @@ class MemoryBankTest(unittest.TestCase):
     def test_connect_memories(self):
         memory_a = self.mbank.create_memory('Something to remember')
         memory_b = self.mbank.create_memory('Another thing to remember')
-        self.mbank.connect(memory_a, memory_b, type='child')
+        self.mbank.link(memory_a, memory_b, link_type='child')
 
-        connections = self.mbank.get_connections(memory_a)
-        assert_equal(connections[0], (memory_b, 'child'))
+        links = self.mbank.get_links(memory_a)
+        assert_equal(links[0], (memory_b, 'child'))
 
     def test_connect_memories_twice(self):
         memory_a = self.mbank.create_memory('First memory')
         memory_b = self.mbank.create_memory('Second memory')
 
-        self.mbank.connect(memory_a, memory_b, type='child')
-        self.mbank.connect(memory_a, memory_b, type='related')
+        self.mbank.link(memory_a, memory_b, link_type='child')
+        self.mbank.link(memory_a, memory_b, link_type='related')
 
-        connections = self.mbank.get_connections(memory_a)
-        assert_equal(len(connections), 2)
-        assert((memory_b, 'child') in connections)
-        assert((memory_b, 'related') in connections)
+        links = self.mbank.get_links(memory_a)
+        assert_equal(len(links), 2)
+        assert((memory_b, 'child') in links)
+        assert((memory_b, 'related') in links)
+
+
+class TestDatabase(object):
+    def __init__(self):
+        self.memories = []
+        self.links = []
+
+    def save_memory(self, memory):
+        self.memories.append(memory)
+
+    def save_link(self, link):
+        self.links.append(link)
+
+    def find_links(self, memory):
+        return (c for c in self.links
+                if c.memory_a == memory or c.memory_b == memory)
+
+    def find_memory_by_title(self, title):
+        return next(m for m in self.memories if m.title == title)
