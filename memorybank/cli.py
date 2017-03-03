@@ -74,8 +74,8 @@ def get_active_memory():
     pile = urwid.Pile([('pack', active_memory),
                        ('pack', urwid.Divider()),
                        ('pack', note)])
-    pile = urwid.Padding(pile, left=1, right=1)
-    lb = urwid.AttrMap(urwid.LineBox(pile, title='Active Memory'), 'main_box')
+    pile = urwid.Padding(pile, left=2, right=1)
+    lb = urwid.AttrMap(pile, 'main_box')
     return lb
 
 
@@ -115,17 +115,17 @@ def get_header_widget():
 def main():
     pile_left = urwid.Pile([get_parents_widget(),
                             ('pack', urwid.Divider(top=1)),
-                            get_siblings_widget()])
+                            get_children_widget()])
     pile_left = urwid.Padding(pile_left, left=1, right=1)
-    pile_right = urwid.Pile([get_children_widget(),
+    pile_right = urwid.Pile([get_siblings_widget(),
                              ('pack', urwid.Divider(top=1)),
                              get_related_widget()])
     pile_right = urwid.Padding(pile_right, left=1, right=1)
 
-    cols = urwid.Columns([('weight', 1, pile_left),
-                          ('weight', 2, get_active_memory()),
+    cols = urwid.Columns([('weight', 2, get_active_memory()),
+                          ('weight', 1, pile_left),
                           ('weight', 1, pile_right)],
-                         dividechars=5)
+                         dividechars=2)
 
     main_pile = urwid.Pile([('pack', get_header_widget()),
                             ('pack', urwid.Divider(bottom=2)),
