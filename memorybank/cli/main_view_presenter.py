@@ -4,36 +4,47 @@ from memorybank.core import MemoryBank
 from memorybank.cli.main_view import *
 import urwid
 
-import asyncio
 
 class MainViewPresenter(object):
-    def __init__(self, view, memorybank, active_id):
+    def __init__(self, view, memorybank):
         self._view = view
-        loop = asyncio.get_event_loop()
-        self._view.set_active_title('A title to remember')
-        self._view.set_active_note("Is't this just awesome?")
-        loop.call_later(1, self.replace_parents)
-        loop.call_later(2, self.replace_children)
-        loop.call_later(3, self.replace_siblings)
-        loop.call_later(4, self.replace_related)
+        self._memorybank = memorybank
+        self.active_memory = memorybank.start_memory
 
-    def replace_parents(self):
-        self._view.display_parents([MemoryLink('New item 1', 1),
-                                    MemoryLink('New item 2', 2),
-                                    MemoryLink('New item 3', 3)])
+    @property
+    def active_memory(self):
+        return self._active_memory
 
-    def replace_children(self):
-        self._view.display_children([MemoryLink('New item 1', 1),
-                                     MemoryLink('New item 2', 2),
-                                     MemoryLink('New item 3', 3)])
+    @active_memory.setter
+    def active_memory(self, active_memory):
+        self._active_memory = active_memory
+        self._update_view()
 
-    def replace_siblings(self):
-        self._view.display_siblings([MemoryLink('New item 1', 1),
-                                     MemoryLink('New item 2', 2),
-                                     MemoryLink('New item 3', 3)])
+    def _update_view(self):
+        self._view.title = self.active_memory.title
+        self._view.note = self.active_memory.note
 
+        self._update_links()
 
-    def replace_related(self):
-        self._view.display_related([MemoryLink('New item 1', 1),
-                                    MemoryLink('New item 2', 2),
-                                    MemoryLink('New item 3', 3)])
+    def _update_links(self):
+        links = self._memorybank.get_links(self.active_memory)
+
+        parents, children, siblings, related = ([], [], [], [])
+        type_to_list = {'parent': parents,
+                        'child': children,
+                        'related': related}
+
+        for link in links:
+            if not link:
+                continue
+            memory, link_type = link
+            memory_link = MemoryLink(memory.title, memory.db_id)
+            l = type_to_list[link_type]
+            l.append(memory_link)
+
+        self._view.display_parents(parents)
+        self._view.display_children(children)
+        self._view.display_related(related)
+
+        ## FIXME
+        self._view.display_siblings(siblings)

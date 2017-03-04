@@ -20,22 +20,23 @@ on the 10th anniversary of the Warcraft franchise.
     parents = ['Blizzard Entertainment', 'Roleplaying Games', 'MMORPG', 'Fantasy']
     children = ['Azeroth', 'Illidan', 'Wrath of the Litch King', 'Draenor']
     siblings = ['Diablo', 'Starcraft', 'Warcraft', 'Guild Wars', 'Rift']
-    related = ['Warcraft', 'MMO Champion', 'Dark Legacy Comics']
+    related = ['MMO Champion', 'Dark Legacy Comics']
 
     blizzard = memory_bank.create_memory('Blizzard Entertainment')
-    memory_bank.link(blizzard, m, 'parent')
-    memory_bank.link(blizzard, memory_bank.create_memory('Diablo'), 'parent')
-    memory_bank.link(blizzard, memory_bank.create_memory('StarCraft'), 'parent')
-    memory_bank.link(blizzard, memory_bank.create_memory('Warcraft'), 'parent')
-
+    memory_bank.link(blizzard, m, 'child')
+    memory_bank.link(blizzard, memory_bank.create_memory('Diablo'), 'child')
+    memory_bank.link(blizzard, memory_bank.create_memory('StarCraft'), 'child')
+    warcraft = memory_bank.create_memory('Warcraft')
+    memory_bank.link(blizzard, warcraft, 'child')
+    memory_bank.link(m, warcraft, 'related')
     roleplay = memory_bank.create_memory('Roleplaying Games')
-    memory_bank.link(roleplay, m, 'parent')
-    memory_bank.link(roleplay, memory_bank.create_memory('Guild Wards'), 'parent')
+    memory_bank.link(roleplay, m, 'child')
+    memory_bank.link(roleplay, memory_bank.create_memory('Guild Wards'), 'child')
 
-    memory_bank.link(memory_bank.create_memory('Fantasy'), m, 'parent')
+    memory_bank.link(memory_bank.create_memory('Fantasy'), m, 'child')
 
     for child in children:
-        memory_bank.link(m, memory_bank.create_memory(child), 'parent')
+        memory_bank.link(m, memory_bank.create_memory(child), 'child')
 
     for r in related:
         memory_bank.link(m, memory_bank.create_memory(r), 'related')

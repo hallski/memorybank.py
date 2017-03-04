@@ -33,10 +33,20 @@ class MainView(urwid.WidgetWrap):
         self._controller = controller
         urwid.WidgetWrap.__init__(self, self._create_widget_tree())
 
-    def set_active_title(self, title):
+    @property
+    def title(self):
+        return self._active_memory_name.text
+
+    @title.setter
+    def title(self, title):
         self._active_memory_name.set_text(('active_memory', title))
 
-    def set_active_note(self, note):
+    @property
+    def note(self):
+        return self._active_memory_note.text
+
+    @note.setter
+    def note(self, note):
         self._active_memory_note.set_text(('active_note', note))
 
     def display_parents(self, parents):

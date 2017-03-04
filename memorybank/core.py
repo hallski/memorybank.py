@@ -8,10 +8,17 @@ class MemoryBank(object):
     def __init__(self, memory_store, link_store):
         self._memory_store = memory_store
         self._link_store = link_store
+        self._start_memory = None
+
+    @property
+    def start_memory(self):
+        return self._start_memory
 
     def create_memory(self, title, note=''):
         memory = Memory(title, note=note)
         self._memory_store.insert(memory)
+        if not self._start_memory:
+            self._start_memory = memory
         return memory
 
     def save_memory(self, memory):
@@ -33,8 +40,15 @@ class MemoryBank(object):
 
     def get_links(self, memory):
         links = self._link_store.find(memory)
-
         return [l.get_relative_link_for_memory(memory) for l in links]
+
+    def get_linked_memories(self, memory, link_type=None):
+        links = self.get_links(memory)
+        return [memory for memory, ltype in links if ltype == link_type]
+
 
     def find_memory(self, title):
         return self._memory_store.find_by_title(title)
+
+    def find_memory_by_id(self, identifier):
+        return self._memory_store.find(identifier)

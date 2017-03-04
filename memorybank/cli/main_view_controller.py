@@ -9,16 +9,19 @@ class MainViewController(object):
         # Handler for all events from the MainView
         # Sets the MainViewModel on the MainView when required
         # Sends commands to the core
-        self._view_presenter = None
+        self._memorybank = memorybank
+        self._presenter = None
 
     @property
-    def view_presenter(self):
-        return self._view_presenter
+    def presenter(self):
+        return self._presenter
 
-    @view_presenter.setter
-    def view_presenter(self, view_presenter):
-        self._view_presenter = view_presenter
+    @presenter.setter
+    def presenter(self, presenter):
+        self._presenter = presenter
 
     def memory_selected(self, identifier):
         '''Action called from the view when a memory link is activated'''
-        print('Open memory {0}'.format(identifier))
+        memory = self._memorybank.find_memory_by_id(identifier)
+        if memory:
+            self.presenter.active_memory = memory

@@ -28,7 +28,7 @@ def main():
     memorybank = create_fake_memory_bank()
     view_controller = MainViewController(memorybank)
     view = MainView(view_controller)
-    view_presenter = MainViewPresenter(view, memorybank, '')
+    view_presenter = MainViewPresenter(view, memorybank)
     view_controller.presenter = view_presenter
 
     event_loop = urwid.AsyncioEventLoop(loop=asyncio.get_event_loop())

@@ -14,6 +14,11 @@ class MemoryBankTest(unittest.TestCase):
         memory = self.mbank.create_memory('Creating a new memory')
         assert_equal(memory.title, 'Creating a new memory')
 
+    def test_first_memory_becomes_start_memory(self):
+        assert_is_none(self.mbank.start_memory)
+        memory = self.mbank.create_memory('This should become the root')
+        assert_equal(self.mbank.start_memory, memory)
+
     def test_find_memory(self):
         memory = self.mbank.create_memory('Memory to find')
         found_memory = self.mbank.find_memory('Memory to find')
@@ -104,3 +109,8 @@ class MemoryBankTest(unittest.TestCase):
 
          assert_equal(self.mbank.find_memory('A new title'), memory)
          assert_is_none(self.mbank.find_memory('A memory'))
+
+    def test_can_find_memory_by_id(self):
+        memory = self.mbank.create_memory('A memory to find')
+
+        assert_equal(self.mbank.find_memory_by_id(memory.db_id), memory)
