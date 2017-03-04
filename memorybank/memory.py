@@ -33,8 +33,7 @@ class Memory(object):
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
-            return self.title == other.title and \
-                   self.note == other.note
+            return self.db_id and other.db_id and self.db_id == other.db_id
         return NotImplemented
 
     def __ne__(self, other):

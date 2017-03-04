@@ -4,7 +4,7 @@ import copy
 import uuid
 
 
-class NonPersistentMemoryRepository(object):
+class NonPersistentMemoryStore(object):
     def __init__(self):
         self.memories = []
 
@@ -25,24 +25,32 @@ class NonPersistentMemoryRepository(object):
         self.memories.remove(memory)
 
     def find_by_title(self, title):
-        m = next(m for m in self.memories if m.title == title)
-        if m:
-            copy.deepcopy(m)
-        return m
+        for memory in self.memories:
+            if memory.title == title:
+                return memory
 
-class NonPersistentLinkRepository(object):
+        return None
+
+
+class NonPersistentLinkStore(object):
     def __init__(self):
         self._links = []
 
-    def insert(link):
-        pass
-
-    def remove(link):
-        pass
-
-    def save(self, link):
+    def insert(self, link):
+        link.db_id = uuid.uuid4()
         self._links.append(link)
 
+    def remove(self, link):
+        self._links.remove(link)
+
+    def remove_links(self, links):
+        for link in links:
+            self.remove(link)
+
+    def save(self, link):
+        # Do nothing
+        pass
+
     def find(self, memory):
-        return (c for c in self._links
-                if c.memory_a == memory or c.memory_b == memory)
+        return [link for link in self._links
+                if link.memory_a == memory or link.memory_b == memory]

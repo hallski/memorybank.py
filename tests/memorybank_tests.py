@@ -8,9 +8,7 @@ import unittest
 
 class MemoryBankTest(unittest.TestCase):
     def setUp(self):
-        self.memory_repository = NonPersistentMemoryRepository()
-        self.link_repository = NonPersistentLinkRepository()
-        self.mbank = MemoryBank(self.memory_repository, self.link_repository)
+        self.mbank = MemoryBank(NonPersistentMemoryStore(), NonPersistentLinkStore())
 
     def test_create_memory(self):
         memory = self.mbank.create_memory('Creating a new memory')
@@ -71,3 +69,28 @@ class MemoryBankTest(unittest.TestCase):
         links = self.mbank.get_links(memory_b)
         assert_equal(len(links), 1)
         assert_equal(links[0], (memory_a, 'related'))
+
+    def test_remove_memory(self):
+        memory = self.mbank.create_memory('Memory to remove')
+        self.mbank.remove_memory(memory)
+
+        assert_is_none(self.mbank.find_memory('Memory to remove'))
+
+    def test_removing_memory_removes_links(self):
+        memory_a = self.mbank.create_memory('A Memory')
+        memory_b = self.mbank.create_memory('B Memory')
+        memory_c = self.mbank.create_memory('C Memory')
+
+        self.mbank.link(memory_a, memory_b, 'child')
+        self.mbank.link(memory_a, memory_c, 'related')
+        self.mbank.link(memory_b, memory_c, 'related')
+
+        self.mbank.remove_memory(memory_a)
+
+        links_b = self.mbank.get_links(memory_b)
+        links_c = self.mbank.get_links(memory_c)
+
+        assert_equal(len(links_b), 1)
+        assert_equal(len(links_c), 1)
+        assert_equal(links_b[0], (memory_c, 'related'))
+        assert_equal(links_c[0], (memory_b, 'related'))
