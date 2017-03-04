@@ -19,7 +19,7 @@ config = {
     'name': 'MemoryBank',
     'entry_points': {
         'console_scripts': [
-            'mb = memorybank.cli:main'
+            'mb = memorybank.cli.app:main'
         ]
     }
 }
