@@ -1,13 +1,12 @@
 # Copyright (C) 2017 Mikael Hallendal <hallski@hallski.org>
 
 import urwid
-from memorybank.core import Memory
+from memorybank.core import MemoryBank
+from memorybank.memory import Memory
+from memorybank.fake_data import *
+
 import asyncio
 
-parents = ['Blizzard Entertainment', 'Roleplaying Games', 'MMORPG', 'Fantasy']
-children = ['Azeroth', 'Illidan', 'Wrath of the Litch King', 'Draenor']
-siblings = ['Diablo', 'Starcraft', 'Warcraft', 'Guild Wars', 'Rift']
-related = ['Warcraft', 'MMO Champion', 'Dark Legacy Comics']
 
 palette = [
     ('title', 'light blue', 'black'),
@@ -22,17 +21,14 @@ palette = [
 active_memory = urwid.Text(('active_memory', 'World of Warcraft'),
                            align='left')
 
-a_memory = Memory('Word of Warcraft', note='''\
-World of Warcraft (WoW) is a massively multiplayer online  \
-role-playing game (MMORPG) released in 2004 by Blizzard Entertainment. It is \
-the fourth released game setin the fantasy Warcraft universe, which was first \
-introduced by Warcraft: Orcs & Humans in 1994.[3] World of Warcraft takes \
-place within the Warcraft world of Azeroth, approximately four years after \
-the events at the conclusion of Blizzard's previous Warcraft release, \
-Warcraft III: The Frozen Throne.[4] Blizzard Entertainment announced World of \
-Warcraft on September 2, 2001.[5] The game was released on November 23, 2004, \
-on the 10th anniversary of the Warcraft franchise.
-''')
+parents = ['Blizzard Entertainment', 'Roleplaying Games', 'MMORPG', 'Fantasy']
+children = ['Azeroth', 'Illidan', 'Wrath of the Litch King', 'Draenor']
+siblings = ['Diablo', 'Starcraft', 'Warcraft', 'Guild Wars', 'Rift']
+related = ['Warcraft', 'MMO Champion', 'Dark Legacy Comics']
+
+
+memory_bank = create_fake_memory_bank()
+a_memory = memory_bank.find_memory('World of Warcraft')
 
 
 # Temporary testing out to see how it looks with a number at the front.
