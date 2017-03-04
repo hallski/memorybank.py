@@ -8,8 +8,9 @@ import unittest
 
 class MemoryBankTest(unittest.TestCase):
     def setUp(self):
-        self.database = InMemoryDatabase()
-        self.mbank = MemoryBank(self.database)
+        self.memory_repository = NonPersistentMemoryRepository()
+        self.link_repository = NonPersistentLinkRepository()
+        self.mbank = MemoryBank(self.memory_repository, self.link_repository)
 
     def test_create_memory(self):
         memory = self.mbank.create_memory('Creating a new memory')
