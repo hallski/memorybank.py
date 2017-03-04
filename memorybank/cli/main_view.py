@@ -25,8 +25,6 @@ class MemoryLinkButton(urwid.Button):
         self._w = urwid.AttrMap(urwid.SelectableIcon(caption, 0),
                                 None, focus_map='selected_menu_item')
 
-def wrap_item_in_button(callback, item):
-    return MemoryLinkButton(item.name, callback, item.identifier)
 
 class MainView(urwid.WidgetWrap):
     def __init__(self, controller):
