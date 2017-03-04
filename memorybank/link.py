@@ -17,3 +17,16 @@ class Link(object):
     @property
     def link_type(self):
         return self._link_type
+
+    def get_relative_link_for_memory(self, memory):
+        '''Creates a tuple with the memory and link type from
+           the memories perspective.'''
+        if memory == self._memory_a:
+            return (self._memory_b, self._link_type)
+        elif memory == self._memory_b:
+            if self._link_type == 'child':
+                return (self._memory_a, 'parent')
+            elif self._link_type == 'related':
+                return (self._memory_a, 'related')
+        else:
+            raise Exception('Memory {0} is not part of this link'.format(memory))
