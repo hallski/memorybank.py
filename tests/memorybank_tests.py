@@ -94,3 +94,13 @@ class MemoryBankTest(unittest.TestCase):
         assert_equal(len(links_c), 1)
         assert_equal(links_b[0], (memory_c, 'related'))
         assert_equal(links_c[0], (memory_b, 'related'))
+
+    def test_update_memory(self):
+         memory = self.mbank.create_memory('A memory')
+
+         memory.title = 'A new title'
+
+         self.mbank.save_memory(memory)
+
+         assert_equal(self.mbank.find_memory('A new title'), memory)
+         assert_is_none(self.mbank.find_memory('A memory'))
