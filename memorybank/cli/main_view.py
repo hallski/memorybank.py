@@ -115,21 +115,4 @@ class MainView(urwid.WidgetWrap):
 
         main_pile = urwid.Padding(main_pile, left=2, right=2)
 
-
-        # left_link_col = urwid.Pile([self._create_parents(),
-        #                             ('pack', urwid.Divider()),
-        #                             self._create_children()])
-        # right_link_col = urwid.Pile([self._create_siblings(),
-        #                              ('pack', urwid.Divider()),
-        #                              self._create_related()])
-
-        # cols = urwid.Columns([('weight', 2, self._create_active_memory_frame()),
-        #                       ('weight', 1, left_link_col),
-        #                       ('weight', 1, right_link_col)])
-
-        # main_pile = urwid.Pile([('pack', self._create_header_widget()),
-        #                         ('pack', urwid.Divider(bottom=2)),
-        #                         cols,
-        #                         ('pack', urwid.Divider(top=2))])
-
         return urwid.AttrMap(main_pile, 'background')
