@@ -24,6 +24,14 @@ class NonPersistentMemoryStore(object):
 
         self.memories.remove(memory)
 
+    def find(self, identifier):
+        for memory in self.memories:
+            if memory.db_id == identifier:
+                return memory
+
+        return None
+
+
     def find_by_title(self, title):
         for memory in self.memories:
             if memory.title == title:
