@@ -42,9 +42,7 @@ class MainViewPresenter(object):
             l = type_to_list[link_type]
             l.append(memory_link)
 
-        self._view.display_parents(parents)
-        self._view.display_children(children)
-        self._view.display_related(related)
-
-        ## FIXME
-        self._view.display_siblings(siblings)
+        self._view.display_links({'parents': parents,
+                                  'children': children,
+                                  'related': related,
+                                  'siblings': siblings})

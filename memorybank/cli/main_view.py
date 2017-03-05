@@ -44,17 +44,13 @@ class MainView(urwid.WidgetWrap):
     def note(self, note):
         self._note_widget.set_text(('active_note', note))
 
-    def display_parents(self, parents):
-        self._update_link_list(self._parents, parents)
-
-    def display_children(self, children):
-        self._update_link_list(self._children, children)
-
-    def display_siblings(self, siblings):
-        self._update_link_list(self._siblings, siblings)
-
-    def display_related(self, related):
-        self._update_link_list(self._related, related)
+    def display_links(self, links):
+        '''Updates the link lists based on the values 'parents', 'children', 'siblings'
+           and 'related' in the links dictionary'''
+        self._update_link_list(self._parents, links['parents'])
+        self._update_link_list(self._children, links['children'])
+        self._update_link_list(self._siblings, links['siblings'])
+        self._update_link_list(self._related, links['related'])
 
     # Private
     def _clicked(self, button, identifier):
