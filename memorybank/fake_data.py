@@ -22,7 +22,20 @@ on the 10th anniversary of the Warcraft franchise.
     siblings = ['Diablo', 'Starcraft', 'Warcraft', 'Guild Wars', 'Rift']
     related = ['MMO Champion', 'Dark Legacy Comics']
 
-    blizzard = memory_bank.create_memory('Blizzard Entertainment')
+    blizzard = memory_bank.create_memory('Blizzard Entertainment',
+                                         note='''\
+Blizzard Entertainment, Inc. is an American video game developer and \
+publisher based in Irvine, California, and is currently a subsidiary of \
+American company Activision Blizzard. The company was founded on February \
+8, 1991, under the name Silicon & Synapse by three graduates of the \
+University of California, Los Angeles:[4] Michael Morhaime, Frank Pearce, \
+and Allen Adham. The company originally concentrated primarily on the \
+creation of game ports for other studios before beginning development \
+of their own software in 1993 with the development of games like Rock n' \
+Roll Racing and The Lost Vikings. In 1994 the company became Chaos Studios, \
+then Blizzard Entertainment, Inc. after being acquired by distributor \
+Davidson & Associates.'''
+                                         )
     memory_bank.link(blizzard, m, 'child')
     memory_bank.link(blizzard, memory_bank.create_memory('Diablo'), 'child')
     memory_bank.link(blizzard, memory_bank.create_memory('StarCraft'), 'child')
