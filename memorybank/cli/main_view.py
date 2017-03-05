@@ -5,12 +5,9 @@ import urwid
 from collections import namedtuple
 from functools import partial
 
-#def get_list_widget(items):
-#    walker = urwid.SimpleFocusListWalker(items) #wrap_list_items(items, wrap_button))
-#    widget = urwid.ListBox(walker)
-#    return widget
 
 MemoryLink = namedtuple('MemoryLink', ['name', 'identifier'])
+
 
 def create_relation_frame(title, items):
     title = urwid.Text(('title', title))
