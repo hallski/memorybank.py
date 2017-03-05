@@ -33,19 +33,19 @@ class MainView(urwid.WidgetWrap):
 
     @property
     def title(self):
-        return self._active_memory_name.text
+        return self._title_widget.text
 
     @title.setter
     def title(self, title):
-        self._active_memory_name.set_text(('active_memory', title))
+        self._title_widget.set_text(('active_memory', title))
 
     @property
     def note(self):
-        return self._active_memory_note.text
+        return self._note_widget.text
 
     @note.setter
     def note(self, note):
-        self._active_memory_note.set_text(('active_note', note))
+        self._note_widget.set_text(('active_note', note))
 
     def display_parents(self, parents):
         self._update_link_list(self._parents, parents)
@@ -82,13 +82,6 @@ class MainView(urwid.WidgetWrap):
     def _create_related(self):
         return create_relation_frame('Related', items=self._related)
 
-    def _create_active_memory_frame(self):
-        pile = urwid.Pile([('pack', self._active_memory_name),
-                           ('pack', urwid.Divider()),
-                           ('pack', self._active_memory_note)])
-        padding = urwid.Padding(pile, left=2, right=1)
-        return urwid.AttrMap(padding, 'main_box')
-
     def _create_header_widget(self):
         text = urwid.Text('Memory Bank - 0.1', align='center')
         return urwid.AttrMap(text, 'header')
@@ -99,23 +92,46 @@ class MainView(urwid.WidgetWrap):
         self._siblings = urwid.SimpleFocusListWalker([])
         self._related = urwid.SimpleFocusListWalker([])
 
-        self._active_memory_name = urwid.Text(('active_memory', ''), align='left')
-        self._active_memory_note = urwid.Text(('active_note', ''))
+        self._title_widget = urwid.Text(('active_memory', ''), align='center')
+        self._note_widget = urwid.Text(('active_note', ''))
 
-        left_link_col = urwid.Pile([self._create_parents(),
-                                    ('pack', urwid.Divider()),
-                                    self._create_children()])
-        right_link_col = urwid.Pile([self._create_siblings(),
-                                     ('pack', urwid.Divider()),
-                                     self._create_related()])
+        title_box = urwid.LineBox(self._title_widget)
+        title_box = urwid.AttrMap(title_box, 'title_box')
 
-        cols = urwid.Columns([('weight', 2, self._create_active_memory_frame()),
-                              ('weight', 1, left_link_col),
-                              ('weight', 1, right_link_col)])
+        note_box = urwid.LineBox(urwid.Padding(self._note_widget, left=1, right=1))
+        note_box = urwid.AttrMap(note_box, 'title_box')
+
+        links_col = urwid.Columns([self._create_parents(),
+                                   self._create_children(),
+                                   self._create_siblings(),
+                                   self._create_related()])
 
         main_pile = urwid.Pile([('pack', self._create_header_widget()),
-                                ('pack', urwid.Divider(bottom=2)),
-                                cols,
+                                ('pack', urwid.Divider(bottom=1)),
+                                ('pack', title_box),
+                                ('pack', urwid.Divider()),
+                                links_col,
+                                ('pack', urwid.Divider()),
+                                ('pack', self._note_widget),
                                 ('pack', urwid.Divider(top=2))])
+
+        main_pile = urwid.Padding(main_pile, left=2, right=2)
+
+
+        # left_link_col = urwid.Pile([self._create_parents(),
+        #                             ('pack', urwid.Divider()),
+        #                             self._create_children()])
+        # right_link_col = urwid.Pile([self._create_siblings(),
+        #                              ('pack', urwid.Divider()),
+        #                              self._create_related()])
+
+        # cols = urwid.Columns([('weight', 2, self._create_active_memory_frame()),
+        #                       ('weight', 1, left_link_col),
+        #                       ('weight', 1, right_link_col)])
+
+        # main_pile = urwid.Pile([('pack', self._create_header_widget()),
+        #                         ('pack', urwid.Divider(bottom=2)),
+        #                         cols,
+        #                         ('pack', urwid.Divider(top=2))])
 
         return urwid.AttrMap(main_pile, 'background')

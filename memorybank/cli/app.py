@@ -11,11 +11,11 @@ from memorybank.cli.main_view_presenter import MainViewPresenter
 
 palette = [
     ('title', 'light blue', 'black'),
-    ('header', 'white', 'dark blue'),
+    ('header', 'light green', 'black'),
     ('active_memory', 'yellow', 'black'),
     ('active_note', 'white', 'black'),
     ('selected_menu_item', 'white', 'dark green'),
-    ('main_box', 'light blue', 'black'),
+    ('title_box', 'dark gray', 'black'),
     ('background', 'dark green', 'black')]
 
 
