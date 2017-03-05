@@ -14,8 +14,8 @@ MemoryLink = namedtuple('MemoryLink', ['name', 'identifier'])
 
 def create_relation_frame(title, items):
     title = urwid.Text(('title', title))
-    pile = urwid.Pile([('pack', urwid.Divider()), urwid.ListBox(items)])
-    return urwid.Frame(pile, header=title)
+    listbox = urwid.ListBox(items)
+    return urwid.Frame(listbox, header=title)
 
 
 class MemoryLinkButton(urwid.Button):
@@ -83,8 +83,12 @@ class MainView(urwid.WidgetWrap):
         return create_relation_frame('Related', items=self._related)
 
     def _create_header_widget(self):
-        text = urwid.Text('Memory Bank - 0.1', align='center')
+        text = urwid.Text('Memory Bank - 0.1', align='right')
         return urwid.AttrMap(text, 'header')
+
+    def _create_footer_widget(self):
+        text = urwid.Text('Menu', align='left')
+        return urwid.AttrMap(text, 'footer')
 
     def _create_widget_tree(self):
         self._parents = urwid.SimpleFocusListWalker([])
@@ -95,6 +99,8 @@ class MainView(urwid.WidgetWrap):
         self._title_widget = urwid.Text(('active_memory', ''), align='center')
         self._note_widget = urwid.Text(('active_note', ''))
 
+        note_box = urwid.Filler(self._note_widget, valign='top')
+
         title_box = urwid.LineBox(self._title_widget)
         title_box = urwid.AttrMap(title_box, 'title_box')
 
@@ -104,14 +110,19 @@ class MainView(urwid.WidgetWrap):
                                    self._create_related()],
                                   dividechars=1)
 
+        nr_of_links_shown = 5
+        links_col = urwid.BoxAdapter(links_col, nr_of_links_shown + 1)
+
         main_pile = urwid.Pile([('pack', self._create_header_widget()),
+                                ('pack', urwid.Divider()),
+                                ('pack', self._title_widget), # title_box),
+                                ('pack', urwid.Divider()),
+                                ('pack', links_col),
+                                ('pack', urwid.Divider()),
+                                note_box,
                                 ('pack', urwid.Divider(bottom=1)),
-                                ('pack', title_box),
-                                ('pack', urwid.Divider()),
-                                links_col,
-                                ('pack', urwid.Divider()),
-                                ('pack', self._note_widget),
-                                ('pack', urwid.Divider(top=2))])
+                                # ('pack', self._create_footer_widget())
+        ])
 
         main_pile = urwid.Padding(main_pile, left=2, right=2)
 
