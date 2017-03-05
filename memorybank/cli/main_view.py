@@ -98,13 +98,11 @@ class MainView(urwid.WidgetWrap):
         title_box = urwid.LineBox(self._title_widget)
         title_box = urwid.AttrMap(title_box, 'title_box')
 
-        note_box = urwid.LineBox(urwid.Padding(self._note_widget, left=1, right=1))
-        note_box = urwid.AttrMap(note_box, 'title_box')
-
         links_col = urwid.Columns([self._create_parents(),
                                    self._create_children(),
                                    self._create_siblings(),
-                                   self._create_related()])
+                                   self._create_related()],
+                                  dividechars=1)
 
         main_pile = urwid.Pile([('pack', self._create_header_widget()),
                                 ('pack', urwid.Divider(bottom=1)),
