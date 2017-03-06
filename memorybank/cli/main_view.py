@@ -3,8 +3,6 @@
 import urwid
 
 from collections import namedtuple
-from functools import partial
-
 
 MemoryLink = namedtuple('MemoryLink', ['name', 'identifier'])
 
@@ -94,9 +92,6 @@ class MainView(urwid.WidgetWrap):
 
         note_box = urwid.Filler(self._note_widget, valign='top')
 
-        title_box = urwid.LineBox(self._title_widget)
-        title_box = urwid.AttrMap(title_box, 'title_box')
-
         links_col = urwid.Columns([self._create_parents(),
                                    self._create_children(),
                                    self._create_siblings(),
@@ -108,14 +103,12 @@ class MainView(urwid.WidgetWrap):
 
         main_pile = urwid.Pile([('pack', self._create_header_widget()),
                                 ('pack', urwid.Divider()),
-                                ('pack', self._title_widget), # title_box),
+                                ('pack', self._title_widget),
                                 ('pack', urwid.Divider()),
                                 ('pack', links_col),
                                 ('pack', urwid.Divider()),
                                 note_box,
-                                ('pack', urwid.Divider(bottom=1)),
-                                # ('pack', self._create_footer_widget())
-        ])
+                                ('pack', urwid.Divider(bottom=1))])
 
         main_pile = urwid.Padding(main_pile, left=2, right=2)
 

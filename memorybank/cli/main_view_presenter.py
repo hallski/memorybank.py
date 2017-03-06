@@ -1,8 +1,6 @@
 # Copyright (C) 2017 Mikael Hallendal <hallski@hallski.org>
 
-from memorybank.core import MemoryBank
-from memorybank.cli.main_view import *
-import urwid
+from memorybank.cli.main_view import MemoryLink
 
 
 class MainViewPresenter(object):
