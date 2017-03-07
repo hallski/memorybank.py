@@ -2,11 +2,11 @@
 
 import urwid
 import asyncio
+import string
 
 from memorybank.fake_data import *
-from memorybank.cli.main_view import MainView
-from memorybank.cli.main_view_controller import MainViewController
-from memorybank.cli.main_view_presenter import MainViewPresenter
+from memorybank.cli.memory_view import MemoryView
+from memorybank.cli.memory_view_controller import MemoryViewController
 
 
 palette = [
@@ -17,27 +17,32 @@ palette = [
     ('selected_menu_item', 'white', 'dark green'),
     ('title_box', 'dark gray', 'black'),
     ('footer', 'white', 'dark blue'),
+    ('command_input', 'yellow', 'dark magenta'),
     ('background', 'dark green', 'black')]
 
 
-def exit_on_q(event):
-    if event in ('q', 'Q'):
-        raise urwid.ExitMainLoop()
+class App(object):
+    def __init__(self):
+        memorybank = create_fake_memory_bank()
+        self._view_controller = MemoryViewController(MemoryView(), memorybank)
+
+    def exit_on_q(self, key):
+        if key.lower() in string.ascii_lowercase:
+            self._view_controller.enable_input(key)
+        #if event in ('q', 'Q'):
+        #    raise urwid.ExitMainLoop()
+
+    def run(self):
+        event_loop = urwid.AsyncioEventLoop(loop=asyncio.get_event_loop())
+        main_loop = urwid.MainLoop(self._view_controller.view, palette,
+                                   event_loop=event_loop,
+                                   unhandled_input=self.exit_on_q)
+        main_loop.run()
 
 
 def main():
-    memorybank = create_fake_memory_bank()
-    view_controller = MainViewController(memorybank)
-    view = MainView(view_controller)
-    view_presenter = MainViewPresenter(view, memorybank)
-    view_controller.presenter = view_presenter
-
-    event_loop = urwid.AsyncioEventLoop(loop=asyncio.get_event_loop())
-    main_loop = urwid.MainLoop(view, palette,
-                               event_loop=event_loop,
-                               unhandled_input=exit_on_q)
-    main_loop.run()
-
+    app = App()
+    app.run()
 
 if __name__ == '__main__':
     main()

@@ -1,8 +1,11 @@
 # Copyright (C) 2017 Mikael Hallendal <hallski@hallski.org>
 
 import urwid
+import weakref
 
 from collections import namedtuple
+from memorybank.cli.command_input import CommandInput
+
 
 MemoryLink = namedtuple('MemoryLink', ['name', 'identifier'])
 
@@ -21,10 +24,17 @@ class MemoryLinkButton(urwid.Button):
                                 None, focus_map='selected_menu_item')
 
 
-class MainView(urwid.WidgetWrap):
-    def __init__(self, controller):
-        self._controller = controller
+class MemoryView(urwid.WidgetWrap):
+    def __init__(self):
         urwid.WidgetWrap.__init__(self, self._create_widget_tree())
+
+    @property
+    def delegate(self):
+        return self._delegate
+
+    @delegate.setter
+    def delegate(self, delegate):
+        self._delegate = weakref.proxy(delegate)
 
     @property
     def title(self):
@@ -50,9 +60,27 @@ class MainView(urwid.WidgetWrap):
         self._update_link_list(self._siblings, links['siblings'])
         self._update_link_list(self._related, links['related'])
 
+    def display_input(self, initial_text):
+        self._input_widget.set_edit_text(initial_text)
+        self._input_widget.edit_pos = len(initial_text)
+        self._previous_focus = self._main_pile.focus_position
+        a = urwid.AttrMap(self._input_widget, 'command_input')
+        self._main_pile.contents.append((a, ('pack', None)))
+        self._main_pile.set_focus(len(self._main_pile.contents) - 1)
+        self._input_shown = True
+
+    def keypress(self, size, key):
+        key = super(MemoryView, self).keypress(size, key)
+        if key == 'esc' and self._input_shown:
+            self._input_shown = False
+            del self._main_pile.contents[-1]
+            self._main_pile.set_focus(self._previous_focus)
+            return None
+        return key
+
     # Private
     def _clicked(self, button, identifier):
-        self._controller.memory_selected(identifier)
+        self.delegate.memory_selected(identifier)
 
     def _update_link_list(self, link_list, items):
         links = [MemoryLinkButton(item.name, self._clicked, item.identifier)
@@ -87,6 +115,8 @@ class MainView(urwid.WidgetWrap):
         self._siblings = urwid.SimpleFocusListWalker([])
         self._related = urwid.SimpleFocusListWalker([])
 
+        self._input_widget = CommandInput()
+
         self._title_widget = urwid.Text(('active_memory', ''), align='center')
         self._note_widget = urwid.Text(('active_note', ''))
 
@@ -108,7 +138,9 @@ class MainView(urwid.WidgetWrap):
                                 ('pack', links_col),
                                 ('pack', urwid.Divider()),
                                 note_box,
-                                ('pack', urwid.Divider(bottom=1))])
+                                ('pack', urwid.Divider())])
+
+        self._main_pile = main_pile
 
         main_pile = urwid.Padding(main_pile, left=2, right=2)
 

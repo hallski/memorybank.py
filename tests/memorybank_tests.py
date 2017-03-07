@@ -1,9 +1,10 @@
 # Copyright (C) 2017 Mikael Hallendal <hallski@hallski.org>
 
+import unittest
 from nose.tools import *
+
 from memorybank.core import *
 from memorybank.database.in_memory_database import *
-import unittest
 
 
 class MemoryBankTest(unittest.TestCase):
